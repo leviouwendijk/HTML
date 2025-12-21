@@ -12,11 +12,17 @@ let package = Package(
             targets: ["HTML"]
         ),
     ],
+    dependencies: [
+        .package(url: "https://github.com/leviouwendijk/Milieu.git", branch: "master"),
+        .package(url: "https://github.com/leviouwendijk/Methods.git", branch: "master"),
+    ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "HTML"
+            name: "HTML",
+            dependencies: [
+                .product(name: "Milieu", package: "Milieu"),
+                .product(name: "Methods", package: "Methods"),
+            ],
         ),
         .testTarget(
             name: "HTMLTests",

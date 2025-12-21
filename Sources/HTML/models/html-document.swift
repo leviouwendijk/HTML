@@ -1,0 +1,161 @@
+import Foundation
+import Methods
+
+// plan: make children be split in:
+// - `head: [any HTMLNode]`
+// - `body: [any HTMLNode]`
+// for improved ergonomics
+
+extension HTMLDocument {
+    public init(
+        head: [any HTMLNode],
+        body: [any HTMLNode]
+    ) { 
+        self.head = head
+        self.body = body
+
+        // backwards compatiblity
+        self.children = head + body
+    }
+}
+
+public struct HTMLDocument: Sendable {
+    // backwards compatiblity:
+    public var children: [any HTMLNode]
+
+    // new api:
+    public var head: [any HTMLNode]
+    public var body: [any HTMLNode]
+
+    // backwards compatiblity:
+    public init(
+        children: [any HTMLNode]
+    ) { 
+        self.children = children 
+
+        // forward compatiblity:
+        self.head = []
+        self.body = []
+    }
+
+    public func render(options: HTMLRenderOptions = .init()) -> String {
+        var out: String = ""
+
+        if options.doctype {
+            out += HTMLDoctype(.html5).render(options: options)
+        }
+
+        let content = children
+            .map { $0.render(options: options, indent: 0) }
+            .joined()
+
+        out += content
+
+        if options.ensureTrailingNewline, !out.hasSuffix("\n") {
+            out.append("\n")
+        }
+        return out
+    }
+
+    /// Minimal convenience page builder (kept small on purpose).
+    /// Uses MetaSpec/LinkSpec instead of legacy helpers.
+    public static func basic(
+        lang: String? = nil,
+        title: String? = nil,
+        stylesheets: [String] = [],
+        inlineStyle: String? = nil,
+        @HTMLBuilder body: () -> [any HTMLNode]
+    ) -> HTMLDocument {
+        HTML.document {
+            HTML.html(lang.map { ["lang": $0] } ?? HTMLAttribute()) {
+                HTML.head {
+                    // <meta charset="UTF-8">
+                    HTML.meta(.charset())
+                    HTML.meta(.viewport())
+
+                    if let title {
+                        HTML.title(title)
+                    }
+
+                    // <link rel="stylesheet" ...> (in author order)
+                    for href in stylesheets {
+                        HTML.link(.stylesheet(href: href))
+                    }
+
+                    // Inline <style> … </style>
+                    if let css = inlineStyle {
+                        HTML.style(css)
+                    }
+                }
+                HTML.body {
+                    body()
+                }
+            }
+        }
+    }
+}
+
+extension HTMLDocument {
+    public enum RenderDefault {
+        case pretty
+        case minified
+    }
+
+    public func render(
+        default: RenderDefault = .pretty,
+        doctype: Bool? = nil,
+        indentStep: Int? = nil,
+        attributeOrder: HTMLAttributeOrder? = nil,
+        ensureTrailingNewline: Bool? = nil,
+        environment: BuildEnvironment? = nil,
+        onGate: (@Sendable (GateEvent) -> Void)? = nil
+    ) -> String {
+        var opts = HTMLRenderOptions()
+
+        switch `default` {
+        case .pretty:
+            opts = HTMLRenderOptions.Defaults.pretty()
+        case .minified:
+            opts = HTMLRenderOptions.Defaults.minified()
+        }
+
+        doctype.ifNotNil { value in 
+            opts.doctype = value 
+        }
+
+        indentStep.ifNotNil { value in 
+            opts.indentStep = value 
+        }
+
+        attributeOrder.ifNotNil { value in 
+            opts.attributeOrder = value
+        }
+
+        ensureTrailingNewline.ifNotNil { value in 
+            opts.ensureTrailingNewline = value
+        }
+        environment.ifNotNil { value in
+            opts.environment = value
+        }
+
+        opts.onGate = onGate
+
+        return render(options: opts)
+    }
+}
+
+extension HTMLDocument {
+    public func collectedSymbols() -> HTMLSymbols {
+        HTMLSymbolCollector.collect(from: children)
+    }
+
+    // !bad_pfm: rerun the symbol collection for contained data object separately for both ids and classes !
+
+    // public func collectedClassNames() -> Set<String> {
+    //     HTMLSymbolCollector.collect(from: children).classes
+    // }
+
+    // public func collectedIDs() -> Set<String> {
+    //     HTMLSymbolCollector.collect(from: children).ids
+    // }
+}
