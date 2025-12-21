@@ -1,4 +1,5 @@
-import Foundation
+// import Foundation
+import Primitives
 
 public struct HTMLGate: HTMLNode {
     let id: String?

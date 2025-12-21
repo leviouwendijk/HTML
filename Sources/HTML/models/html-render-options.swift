@@ -1,11 +1,12 @@
-import Foundation
+// import Foundation
+import Primitives
 
-/// Build environments we care about for feature gating.
-public enum BuildEnvironment: String, Sendable, RawRepresentable, CaseIterable {
-    case local
-    case test
-    case `public`
-}
+// /// Build environments we care about for feature gating.
+// public enum BuildEnvironment: String, Sendable, RawRepresentable, CaseIterable {
+//     case local
+//     case test
+//     case `public`
+// }
 
 public struct GateEvent: Sendable {
     public let id: String?
