@@ -309,3 +309,24 @@ public extension HTML {
         return el("meta", a)
     }
 }
+
+extension HTML {
+    public static func cite(_ id: String) -> any HTMLNode {
+        HTML.sup(["class": "cite"]) {
+            HTML.a("#ref-\(id)", ["data-ref": id]) { [] }
+        }
+    }
+    // example CSS:
+    //
+    // .article {
+    //     counter-reset: cite;
+    // }
+
+    // .cite {
+    //     counter-increment: cite;
+    // }
+
+    // .cite a::after {
+    //     content: "[" counter(cite) "]";
+    // }
+}
