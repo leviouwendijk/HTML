@@ -313,7 +313,10 @@ public extension HTML {
 extension HTML {
     public static func cite(_ id: String) -> any HTMLNode {
         HTML.sup(["class": "cite"]) {
-            HTML.a("#ref-\(id)", ["data-ref": id]) { [] }
+            HTML.a(
+                "#ref-\(id)",
+                ["data-ref": id, "aria-label": "Reference \(id)"]
+            ) { [] }
         }
     }
     // example CSS:
