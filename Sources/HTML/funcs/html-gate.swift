@@ -2,9 +2,9 @@
 import Primitives
 
 public struct HTMLGate: HTMLNode {
-    let id: String?
-    let allowed: Set<BuildEnvironment>
-    let children: [any HTMLNode]
+    public let id: String?
+    public let allowed: Set<BuildEnvironment>
+    public let children: [any HTMLNode]
 
     public init(
         id: String? = nil,
