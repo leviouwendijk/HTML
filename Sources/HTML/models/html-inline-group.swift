@@ -1,11 +1,11 @@
 import Foundation
 
-struct HTMLInlineGroup: HTMLNode {
-    let children: [any HTMLNode]
+public struct HTMLInlineGroup: HTMLNode {
+    public let children: [any HTMLNode]
 
-    init(_ children: [any HTMLNode]) { self.children = children }
+    public init(_ children: [any HTMLNode]) { self.children = children }
 
-    func render(options: HTMLRenderOptions, indent: Int) -> String {
+    public func render(options: HTMLRenderOptions, indent: Int) -> String {
         var tight = options
         tight.indentation = false
         tight.newlineSeparated = false
