@@ -41,6 +41,23 @@ public struct HTMLElement: HTMLNode {
         let attrStr = attrs.render(order: options.attributeOrder)
         let open = attrStr.isEmpty ? "<\(tag)>" : "<\(tag) \(attrStr)>"
 
+        // Tight rendering for whitespace-sensitive containers.
+        // Prevent pretty-printing from inserting newlines/indentation that becomes visible inside <pre>/<code>.
+        if tag == "pre" || tag == "code" {
+            var tight = options
+            tight.indentation = false
+            tight.newlineSeparated = false
+            tight.ensureTrailingNewline = false
+
+            let inner = children
+                .map { $0.render(options: tight, indent: 0) }
+                .joined()
+
+            let body = "\(pad)\(open)\(inner)</\(tag)>"
+            let outNL = options.newlineSeparated ? "\n" : ""
+            return options.ensureTrailingNewline ? (body + outNL) : body
+        }
+
         // Empty cases first
         if children.isEmpty {
             // try void/selfClosing paths
