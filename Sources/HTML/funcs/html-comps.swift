@@ -134,6 +134,13 @@ public enum HTML {
         el("sup", attrs, c)
     }
 
+    public static func small(
+        _ attrs: HTMLAttribute = HTMLAttribute(),
+        @HTMLBuilder _ c: () -> [any HTMLNode]
+    ) -> any HTMLNode {
+        el("small", attrs, c)
+    }
+
     @inlinable
     public static func repeating(_ n: Int, @HTMLBuilder builder: () -> [any HTMLNode]) -> [any HTMLNode] {
         var out: [any HTMLNode] = []
