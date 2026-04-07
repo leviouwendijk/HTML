@@ -96,14 +96,23 @@ public struct HTMLDocument: Sendable {
     }
 }
 
-extension HTMLDocument {
-    public enum RenderDefault {
-        case pretty
-        case minified
-    }
+public enum DocumentRenderStyle {
+    case pretty
+    case minified
 
+    public var htmlRenderOptions: HTMLRenderOptions {
+        switch self {
+        case .pretty:
+            return HTMLRenderOptions.Defaults.pretty()
+        case .minified:
+            return HTMLRenderOptions.Defaults.minified()
+        }
+    }
+}
+
+extension HTMLDocument {
     public func render(
-        default: RenderDefault = .pretty,
+        default: DocumentRenderStyle = .pretty,
         doctype: Bool? = nil,
         indentStep: Int? = nil,
         attributeOrder: HTMLAttributeOrder? = nil,
@@ -112,13 +121,7 @@ extension HTMLDocument {
         onGate: (@Sendable (GateEvent) -> Void)? = nil
     ) -> String {
         var opts = HTMLRenderOptions()
-
-        switch `default` {
-        case .pretty:
-            opts = HTMLRenderOptions.Defaults.pretty()
-        case .minified:
-            opts = HTMLRenderOptions.Defaults.minified()
-        }
+        opts = `default`.htmlRenderOptions
 
         doctype.ifNotNil { value in 
             opts.doctype = value 
