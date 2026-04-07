@@ -375,3 +375,36 @@ public func option(
 ) -> any HTMLNode {
     HTML.option(attrs, content)
 }
+
+@inlinable
+public func fragment(
+    @HTMLBuilder _ body: () -> [any HTMLNode]
+) -> HTMLFragment {
+    return HTML.fragment(body)
+}
+
+@inlinable
+public func document(
+    html attrs: HTMLAttribute = HTMLAttribute(),
+    head: HTMLFragment = [],
+    body: HTMLFragment = []
+) -> HTMLDocument {
+    return HTML.document(
+        html: attrs,
+        head: head,
+        body: body
+    )
+}
+
+@inlinable
+public func document(
+    html attrs: HTMLAttribute = HTMLAttribute(),
+    @HTMLBuilder head: () -> [any HTMLNode],
+    @HTMLBuilder body: () -> [any HTMLNode]
+) -> HTMLDocument {
+    return HTML.document(
+        html: attrs,
+        head: head,
+        body: body
+    )
+}

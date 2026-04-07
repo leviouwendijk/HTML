@@ -340,3 +340,35 @@ extension HTML {
     //     content: "[" counter(cite) "]";
     // }
 }
+
+public extension HTML {
+    static func fragment(
+        @HTMLBuilder _ body: () -> [any HTMLNode]
+    ) -> HTMLFragment {
+        return body()
+    }
+
+    static func document(
+        html attrs: HTMLAttribute = HTMLAttribute(),
+        head: HTMLFragment = [],
+        body: HTMLFragment = []
+    ) -> HTMLDocument {
+        return HTMLDocument(
+            html: attrs,
+            head: head,
+            body: body
+        )
+    }
+
+    static func document(
+        html attrs: HTMLAttribute = HTMLAttribute(),
+        @HTMLBuilder head: () -> [any HTMLNode],
+        @HTMLBuilder body: () -> [any HTMLNode]
+    ) -> HTMLDocument {
+        return HTMLDocument(
+            html: attrs,
+            head: head(),
+            body: body()
+        )
+    }
+}

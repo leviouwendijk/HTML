@@ -1,42 +1,86 @@
-// import Foundation
 import Methods
 import Primitives
 
-// plan: make children be split in:
-// - `head: [any HTMLNode]`
-// - `body: [any HTMLNode]`
-// for improved ergonomics
-
-extension HTMLDocument {
-    public init(
-        head: [any HTMLNode],
-        body: [any HTMLNode]
-    ) { 
-        self.head = head
-        self.body = body
-
-        // backwards compatiblity
-        self.children = head + body
-    }
-}
-
 public struct HTMLDocument: Sendable {
-    // backwards compatiblity:
+    // legacy / flat document path
+    @available(
+        *,
+        deprecated,
+        message: "Legacy flat-child documents are being phased out. Use html/head/body instead."
+    )
     public var children: [any HTMLNode]
 
-    // new api:
+    // structured path
+    public var html_attributes: HTMLAttribute
     public var head: [any HTMLNode]
     public var body: [any HTMLNode]
 
-    // backwards compatiblity:
+    public init(
+        html html_attributes: HTMLAttribute = HTMLAttribute(),
+        head: [any HTMLNode] = [],
+        body: [any HTMLNode] = []
+    ) {
+        self.html_attributes = html_attributes
+        self.head = head
+        self.body = body
+
+        // legacy compatibility snapshot
+        self.children = [
+            HTML.html(html_attributes) {
+                HTML.head {
+                    head
+                }
+                HTML.body {
+                    body
+                }
+            }
+        ]
+    }
+
+    public init(
+        head: [any HTMLNode],
+        body: [any HTMLNode]
+    ) {
+        self.init(
+            html: HTMLAttribute(),
+            head: head,
+            body: body
+        )
+    }
+
+    @available(
+        *,
+        deprecated,
+        message: "Legacy flat-child documents are being phased out. Use init(html:head:body:) instead."
+    )
     public init(
         children: [any HTMLNode]
-    ) { 
-        self.children = children 
-
-        // forward compatiblity:
+    ) {
+        self.children = children
+        self.html_attributes = HTMLAttribute()
         self.head = []
         self.body = []
+    }
+
+    private var hasStructuredContent: Bool {
+        return !head.isEmpty || !body.isEmpty || !htmlAttributes.render().isEmpty
+    }
+
+    private var renderedNodes: [any HTMLNode] {
+        if hasStructuredContent {
+            return [
+                HTML.html(html_attributes) {
+                    HTML.head {
+                        head
+                    }
+                    HTML.body {
+                        body
+                    }
+                }
+            ]
+        }
+
+        return children
     }
 
     public func render(options: HTMLRenderOptions = .init()) -> String {
@@ -46,7 +90,7 @@ public struct HTMLDocument: Sendable {
             out += HTMLDoctype(.html5).render(options: options)
         }
 
-        let content = children
+        let content = renderedNodes
             .map { $0.render(options: options, indent: 0) }
             .joined()
 
@@ -55,59 +99,10 @@ public struct HTMLDocument: Sendable {
         if options.ensureTrailingNewline, !out.hasSuffix("\n") {
             out.append("\n")
         }
+
         return out
     }
 
-    /// Minimal convenience page builder (kept small on purpose).
-    /// Uses MetaSpec/LinkSpec instead of legacy helpers.
-    public static func basic(
-        lang: String? = nil,
-        title: String? = nil,
-        stylesheets: [String] = [],
-        inlineStyle: String? = nil,
-        @HTMLBuilder body: () -> [any HTMLNode]
-    ) -> HTMLDocument {
-        HTML.document {
-            HTML.html(lang.map { ["lang": $0] } ?? HTMLAttribute()) {
-                HTML.head {
-                    // <meta charset="UTF-8">
-                    HTML.meta(.charset())
-                    HTML.meta(.viewport())
-
-                    if let title {
-                        HTML.title(title)
-                    }
-
-                    // <link rel="stylesheet" ...> (in author order)
-                    for href in stylesheets {
-                        HTML.link(.stylesheet(href: href))
-                    }
-
-                    // Inline <style> … </style>
-                    if let css = inlineStyle {
-                        HTML.style(css)
-                    }
-                }
-                HTML.body {
-                    body()
-                }
-            }
-        }
-    }
-}
-
-public enum DocumentRenderStyle {
-    case pretty
-    case minified
-
-    public var htmlRenderOptions: HTMLRenderOptions {
-        switch self {
-        case .pretty:
-            return HTMLRenderOptions.Defaults.pretty()
-        case .minified:
-            return HTMLRenderOptions.Defaults.minified()
-        }
-    }
 }
 
 extension HTMLDocument {
@@ -123,21 +118,22 @@ extension HTMLDocument {
         var opts = HTMLRenderOptions()
         opts = `default`.htmlRenderOptions
 
-        doctype.ifNotNil { value in 
-            opts.doctype = value 
+        doctype.ifNotNil { value in
+            opts.doctype = value
         }
 
-        indentStep.ifNotNil { value in 
-            opts.indentStep = value 
+        indentStep.ifNotNil { value in
+            opts.indentStep = value
         }
 
-        attributeOrder.ifNotNil { value in 
+        attributeOrder.ifNotNil { value in
             opts.attributeOrder = value
         }
 
-        ensureTrailingNewline.ifNotNil { value in 
+        ensureTrailingNewline.ifNotNil { value in
             opts.ensureTrailingNewline = value
         }
+
         environment.ifNotNil { value in
             opts.environment = value
         }
@@ -150,16 +146,49 @@ extension HTMLDocument {
 
 extension HTMLDocument {
     public func collectedSymbols() -> HTMLSymbols {
-        HTMLSymbolCollector.collect(from: children)
+        return HTMLSymbolCollector.collect(
+            from: renderedNodes
+        )
     }
+}
 
-    // !bad_pfm: rerun the symbol collection for contained data object separately for both ids and classes !
+extension HTMLDocument {
+    /// Minimal convenience page builder (kept small on purpose).
+    /// Uses MetaSpec/LinkSpec instead of legacy helpers.
+    public static func basic(
+        lang: String? = nil,
+        title: String? = nil,
+        stylesheets: [String] = [],
+        inlineStyle: String? = nil,
+        @HTMLBuilder body: () -> [any HTMLNode]
+    ) -> HTMLDocument {
+        var headNodes: [any HTMLNode] = [
+            HTML.meta(.charset()),
+            HTML.meta(.viewport())
+        ]
 
-    // public func collectedClassNames() -> Set<String> {
-    //     HTMLSymbolCollector.collect(from: children).classes
-    // }
+        if let title {
+            headNodes.append(
+                HTML.title(title)
+            )
+        }
 
-    // public func collectedIDs() -> Set<String> {
-    //     HTMLSymbolCollector.collect(from: children).ids
-    // }
+        for href in stylesheets {
+            headNodes.append(
+                HTML.link(.stylesheet(href: href))
+            )
+        }
+
+        if let css = inlineStyle {
+            headNodes.append(
+                HTML.style(css)
+            )
+        }
+
+        return HTMLDocument(
+            html: lang.map { ["lang": $0] } ?? HTMLAttribute(),
+            head: headNodes,
+            body: body()
+        )
+    }
 }
