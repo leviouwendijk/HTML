@@ -20,18 +20,6 @@ public enum HTML {
         HTMLElement(tag, attrs: attrs, children: children())
     }
 
-    public static func document(@HTMLBuilder _ body: () -> [any HTMLNode]) -> HTMLDocument {
-        HTMLDocument(children: body())
-    }
-
-    public static func document(nodes: [any HTMLNode]) -> HTMLDocument {
-        HTMLDocument(children: nodes)
-    }
-
-    public static func document(fragment: HTMLFragment) -> HTMLDocument {
-        HTMLDocument(children: fragment)
-    }
-
     public static func html(_ attrs: HTMLAttribute = HTMLAttribute(), @HTMLBuilder _ c: () -> [any HTMLNode]) -> any HTMLNode { el("html", attrs, c) }
     public static func head(_ attrs: HTMLAttribute = HTMLAttribute(), @HTMLBuilder _ c: () -> [any HTMLNode]) -> any HTMLNode { el("head", attrs, c) }
     public static func body(_ attrs: HTMLAttribute = HTMLAttribute(), @HTMLBuilder _ c: () -> [any HTMLNode]) -> any HTMLNode { el("body", attrs, c) }
@@ -372,3 +360,43 @@ public extension HTML {
         )
     }
 }
+
+// extension HTML {
+//     public static func bodyDocument(
+//         html attrs: HTMLAttribute = HTMLAttribute(),
+//         head: HTMLFragment = [],
+//         @HTMLBuilder _ body: () -> [any HTMLNode]
+//     ) -> HTMLDocument {
+//         return HTMLDocument(
+//             html: attrs,
+//             head: head,
+//             body: body()
+//         )
+//     }
+
+//     public static func headDocument(
+//         html attrs: HTMLAttribute = HTMLAttribute(),
+//         body: HTMLFragment = [],
+//         @HTMLBuilder _ head: () -> [any HTMLNode]
+//     ) -> HTMLDocument {
+//         return HTMLDocument(
+//             html: attrs,
+//             head: head(),
+//             body: body
+//         )
+//     }
+// }
+
+// extension HTML {
+//     public static func document(@HTMLBuilder _ body: () -> [any HTMLNode]) -> HTMLDocument {
+//         HTMLDocument(children: body())
+//     }
+
+//     public static func document(nodes: [any HTMLNode]) -> HTMLDocument {
+//         HTMLDocument(children: nodes)
+//     }
+
+//     public static func document(fragment: HTMLFragment) -> HTMLDocument {
+//         HTMLDocument(children: fragment)
+//     }
+// }

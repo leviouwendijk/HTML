@@ -1,11 +1,18 @@
 import Foundation
 
 // doc
+@available(
+    *,
+    deprecated,
+    message: "Use document(html:head:body:) for full documents or fragment { ... } for fragments."
+)
 @inlinable
 public func document(
     @HTMLBuilder _ body: () -> [any HTMLNode]
 ) -> HTMLDocument {
-    HTML.document(body)
+    return HTML.document(
+        body: body()
+    )
 }
 
 // base

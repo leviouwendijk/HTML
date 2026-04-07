@@ -39,44 +39,6 @@ public struct HTMLFragmentToHTMLDocumentAPI {
 }
 
 extension Array where Element == any HTMLNode {
-    @available(
-        *,
-        deprecated,
-        message: "Legacy flat-child document conversion is being phased out. Use HTML.fragment { ... } for fragments or HTML.document(html:head:body:) for full documents."
-    )
-    public var htmlDocument: HTMLDocument {
-        return HTMLDocument(children: self)
-    }
-
-    @available(
-        *,
-        deprecated,
-        message: "Legacy flat-child document conversion is being phased out. Use HTML.fragment { ... } for fragments or HTML.document(html:head:body:) for full documents."
-    )
-    public var doc: HTMLDocument {
-        return HTMLDocument(children: self)
-    }
-
-    @available(
-        *,
-        deprecated,
-        message: "Legacy flat-child document conversion is being phased out. Use HTML.fragment { ... } for fragments or HTML.document(html:head:body:) for full documents."
-    )
-    public var document: HTMLDocument {
-        return HTMLDocument(children: self)
-    }
-
-    @available(
-        *,
-        deprecated,
-        message: "This renders through the legacy flat-child document path. Use snippet(...) for fragments or an explicit HTMLDocument."
-    )
-    public func render_doc(
-        options: HTMLRenderOptions = .Defaults.pretty()
-    ) -> String {
-        return HTMLDocument(children: self).render(options: options)
-    }
-
     public func snippet(
         options: HTMLRenderOptions = .Defaults.pretty(doctype: false)
     ) -> String {
@@ -90,5 +52,45 @@ extension Array where Element == any HTMLNode {
 
     public var `as`: HTMLFragmentToHTMLDocumentAPI {
         return .init(nodes: self)
+    }
+}
+
+extension Array where Element == any HTMLNode {
+    @available(
+        *,
+        deprecated,
+        message: "Use .as.body(...) or HTML.document(html:head:body:) instead."
+    )
+    public var htmlDocument: HTMLDocument {
+        return self.as.body()
+    }
+
+    @available(
+        *,
+        deprecated,
+        message: "Use .as.body(...) or HTML.document(html:head:body:) instead."
+    )
+    public var doc: HTMLDocument {
+        return self.as.body()
+    }
+
+    @available(
+        *,
+        deprecated,
+        message: "Use .as.body(...) or HTML.document(html:head:body:) instead."
+    )
+    public var document: HTMLDocument {
+        return self.as.body()
+    }
+
+    @available(
+        *,
+        deprecated,
+        message: "Use snippet(...) for fragments or .as.body(...).render(...) for full documents."
+    )
+    public func render_doc(
+        options: HTMLRenderOptions = .Defaults.pretty()
+    ) -> String {
+        return self.as.body().render(options: options)
     }
 }

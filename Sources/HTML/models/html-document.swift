@@ -2,30 +2,59 @@ import Methods
 import Primitives
 
 public struct HTMLDocument: Sendable {
-    // legacy / flat document path
+    public var html_attributes: HTMLAttribute
+    public var head: HTMLFragment
+    public var body: HTMLFragment
+
+    public init(
+        html html_attributes: HTMLAttribute = HTMLAttribute(),
+        head: HTMLFragment = [],
+        body: HTMLFragment = []
+    ) {
+        self.html_attributes = html_attributes
+        self.head = head
+        self.body = body
+    }
+
+    // public init(
+    //     head: HTMLFragment,
+    //     body: HTMLFragment
+    // ) {
+    //     self.init(
+    //         html: HTMLAttribute(),
+    //         head: head,
+    //         body: body
+    //     )
+    // }
+
+    @available(
+        *,
+        deprecated,
+        message: "Legacy flat-child documents are being phased out. Use init(html:head:body:) instead."
+    )
+    public init(
+        children: HTMLFragment
+    ) {
+        self.html_attributes = HTMLAttribute()
+        self.head = []
+        self.body = children
+    }
+}
+
+extension HTMLDocument {
     @available(
         *,
         deprecated,
         message: "Legacy flat-child documents are being phased out. Use html/head/body instead."
     )
-    public var children: [any HTMLNode]
+    public var children: HTMLFragment {
+        return document_tree
+    }
+}
 
-    // structured path
-    public var html_attributes: HTMLAttribute
-    public var head: [any HTMLNode]
-    public var body: [any HTMLNode]
-
-    public init(
-        html html_attributes: HTMLAttribute = HTMLAttribute(),
-        head: [any HTMLNode] = [],
-        body: [any HTMLNode] = []
-    ) {
-        self.html_attributes = html_attributes
-        self.head = head
-        self.body = body
-
-        // legacy compatibility snapshot
-        self.children = [
+extension HTMLDocument {
+    internal var document_tree: HTMLFragment {
+        return [
             HTML.html(html_attributes) {
                 HTML.head {
                     head
@@ -37,60 +66,17 @@ public struct HTMLDocument: Sendable {
         ]
     }
 
-    public init(
-        head: [any HTMLNode],
-        body: [any HTMLNode]
-    ) {
-        self.init(
-            html: HTMLAttribute(),
-            head: head,
-            body: body
-        )
-    }
-
-    @available(
-        *,
-        deprecated,
-        message: "Legacy flat-child documents are being phased out. Use init(html:head:body:) instead."
-    )
-    public init(
-        children: [any HTMLNode]
-    ) {
-        self.children = children
-        self.html_attributes = HTMLAttribute()
-        self.head = []
-        self.body = []
-    }
-
-    private var hasStructuredContent: Bool {
-        return !head.isEmpty || !body.isEmpty || !htmlAttributes.render().isEmpty
-    }
-
-    private var renderedNodes: [any HTMLNode] {
-        if hasStructuredContent {
-            return [
-                HTML.html(html_attributes) {
-                    HTML.head {
-                        head
-                    }
-                    HTML.body {
-                        body
-                    }
-                }
-            ]
-        }
-
-        return children
-    }
-
-    public func render(options: HTMLRenderOptions = .init()) -> String {
+    public func render(
+        options: HTMLRenderOptions = .init()
+    ) -> String {
         var out: String = ""
 
         if options.doctype {
-            out += HTMLDoctype(.html5).render(options: options)
+            out += HTMLDoctype(.html5)
+            .render(options: options)
         }
 
-        let content = renderedNodes
+        let content = document_tree
             .map { $0.render(options: options, indent: 0) }
             .joined()
 
@@ -102,7 +88,6 @@ public struct HTMLDocument: Sendable {
 
         return out
     }
-
 }
 
 extension HTMLDocument {
@@ -145,16 +130,6 @@ extension HTMLDocument {
 }
 
 extension HTMLDocument {
-    public func collectedSymbols() -> HTMLSymbols {
-        return HTMLSymbolCollector.collect(
-            from: renderedNodes
-        )
-    }
-}
-
-extension HTMLDocument {
-    /// Minimal convenience page builder (kept small on purpose).
-    /// Uses MetaSpec/LinkSpec instead of legacy helpers.
     public static func basic(
         lang: String? = nil,
         title: String? = nil,
@@ -162,7 +137,7 @@ extension HTMLDocument {
         inlineStyle: String? = nil,
         @HTMLBuilder body: () -> [any HTMLNode]
     ) -> HTMLDocument {
-        var headNodes: [any HTMLNode] = [
+        var headNodes: HTMLFragment = [
             HTML.meta(.charset()),
             HTML.meta(.viewport())
         ]
