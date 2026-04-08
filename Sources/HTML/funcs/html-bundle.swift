@@ -6,7 +6,7 @@ public extension HTML {
         @HTMLBuilder _ body: () -> HTMLFragment
     ) -> any HTMLNode {
         HTMLBundledRegion(
-            scope: scope.scope_id,
+            scope: scope.scope,
             children: body()
         )
     }
