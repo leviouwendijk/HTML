@@ -46,6 +46,11 @@ public enum HTMLSymbolCollector {
                 collectClasses(from: child, into: &result)
             }
 
+        case let region as HTMLBundledRegion:
+            for child in region.children {
+                collectClasses(from: child, into: &result)
+            }
+
         default:
             break
         }
@@ -71,6 +76,11 @@ public enum HTMLSymbolCollector {
 
         case let gate as HTMLGate:
             for child in gate.children {
+                collectIDs(from: child, into: &result)
+            }
+
+        case let region as HTMLBundledRegion:
+            for child in region.children {
                 collectIDs(from: child, into: &result)
             }
 

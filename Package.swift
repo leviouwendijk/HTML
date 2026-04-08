@@ -13,6 +13,7 @@ let package = Package(
         ),
     ],
     dependencies: [
+        .package(url: "https://github.com/leviouwendijk/DSL.git", branch: "master"),
         .package(url: "https://github.com/leviouwendijk/Milieu.git", branch: "master"),
         .package(url: "https://github.com/leviouwendijk/Methods.git", branch: "master"),
         .package(url: "https://github.com/leviouwendijk/Primitives.git", branch: "master"),
@@ -21,6 +22,7 @@ let package = Package(
         .target(
             name: "HTML",
             dependencies: [
+                .product(name: "DSL", package: "DSL"),
                 .product(name: "Milieu", package: "Milieu"),
                 .product(name: "Methods", package: "Methods"),
                 .product(name: "Primitives", package: "Primitives"),

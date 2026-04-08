@@ -1,4 +1,5 @@
 import Foundation
+import DSL
 
 // doc
 @available(
@@ -414,4 +415,20 @@ public func document(
         head: head,
         body: body
     )
+}
+
+@inlinable
+public func bundle<Scope: ScopeIdentifying>(
+    _ scope: Scope,
+    @HTMLBuilder _ body: () -> [any HTMLNode]
+) -> any HTMLNode {
+    HTML.bundle(scope, body)
+}
+
+@inlinable
+public func bundle(
+    _ scope: ScopeIdentifier,
+    @HTMLBuilder _ body: () -> [any HTMLNode]
+) -> any HTMLNode {
+    HTML.bundle(scope, body)
 }

@@ -1,13 +1,22 @@
 {
-  "originHash" : "3605bf72a55c320503f1bd3b51a31aaed0c98575194d64f5f6b65addaa61c09f",
+  "originHash" : "d12d7978b700c698e5bbb517c161f959da667d30e5f5857b7cd665ac6edc7cad",
   "pins" : [
+    {
+      "identity" : "dsl",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/leviouwendijk/DSL.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "da319404207f5c1176f70c0bce1abf6a4106ccbb"
+      }
+    },
     {
       "identity" : "methods",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/leviouwendijk/Methods.git",
       "state" : {
         "branch" : "master",
-        "revision" : "c8f7182aa3ddffa106e7d35aa5dd12f0873f63d4"
+        "revision" : "47d7bf31c1e547238c1900fe4a1f6961b6cc19bb"
       }
     },
     {
@@ -25,7 +34,7 @@
       "location" : "https://github.com/leviouwendijk/Primitives.git",
       "state" : {
         "branch" : "master",
-        "revision" : "42cf1a8d38e7223c07339787a7616c0348169a85"
+        "revision" : "88c0aad7d912d13fcc9131ac271d1691da998355"
       }
     },
     {

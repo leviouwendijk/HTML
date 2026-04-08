@@ -65,7 +65,6 @@ public enum HTMLPlainTextCollector {
             if !stripped.isEmpty {
                 parts.append(htmlUnescape(stripped))
             }
-
         case _ as HTMLComment:
             break
 
@@ -111,6 +110,11 @@ public enum HTMLPlainTextCollector {
 
             if isBlockish(tag) {
                 parts.append(options.separator)
+            }
+
+        case let region as HTMLBundledRegion:
+            for child in region.children {
+                append(child, into: &parts, options: options)
             }
 
         default:
