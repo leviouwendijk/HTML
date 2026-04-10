@@ -450,6 +450,18 @@ public func document(
     )
 }
 
+@available(*, message: "Backwards compat, use (head:body:) init instead.")
+@inlinable
+public func document(
+    html attrs: HTMLAttribute = HTMLAttribute(),
+    @HTMLBuilder _ content: () -> [any HTMLNode]
+) -> HTMLDocument {
+    HTML.document(
+        html: attrs,
+        content
+    )
+}
+
 @inlinable
 public func bundle<Scope: ScopeIdentifying>(
     _ scope: Scope,
