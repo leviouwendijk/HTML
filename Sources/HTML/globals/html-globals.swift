@@ -309,6 +309,39 @@ public func table(
     @HTMLBuilder _ content: () -> [any HTMLNode]
 ) -> any HTMLNode { HTML.table(attrs, content) }
 
+
+@inlinable
+public func thead(
+    _ attrs: HTMLAttribute = HTMLAttribute(),
+    @HTMLBuilder _ content: () -> [any HTMLNode]
+) -> any HTMLNode {
+    HTML.thead(attrs, content)
+}
+
+@inlinable
+public func tbody(
+    _ attrs: HTMLAttribute = HTMLAttribute(),
+    @HTMLBuilder _ content: () -> [any HTMLNode]
+) -> any HTMLNode {
+    HTML.tbody(attrs, content)
+}
+
+@inlinable
+public func tfoot(
+    _ attrs: HTMLAttribute = HTMLAttribute(),
+    @HTMLBuilder _ content: () -> [any HTMLNode]
+) -> any HTMLNode {
+    HTML.tfoot(attrs, content)
+}
+
+@inlinable
+public func th(
+    _ attrs: HTMLAttribute = HTMLAttribute(),
+    @HTMLBuilder _ content: () -> [any HTMLNode]
+) -> any HTMLNode {
+    HTML.th(attrs, content)
+}
+
 @inlinable
 public func tr(
     _ attrs: HTMLAttribute = [:],
