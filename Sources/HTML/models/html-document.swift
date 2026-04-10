@@ -91,6 +91,8 @@ extension HTMLDocument {
 }
 
 extension HTMLDocument {
+    public typealias RenderDefault = DocumentRenderStyle
+
     public func render(
         default: DocumentRenderStyle = .pretty,
         doctype: Bool? = nil,
