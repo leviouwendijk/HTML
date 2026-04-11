@@ -40,20 +40,45 @@ public struct HTMLAttribute: ExpressibleByDictionaryLiteral, Sendable {
         ["class": value]
     }
 
+    public static func `class`(
+        _ classes: [HTMLClassToken]
+    ) -> HTMLAttribute {
+        var a: HTMLAttribute = [
+            "class": classes.map(\.rawValue).joined(separator: " ")
+        ]
+        a.semanticClassStorage.formUnion(
+            classes.compactMap(\.semanticValue)
+        )
+        return a
+    }
+
+    public static func `class`(
+        _ classes: HTMLClassToken...
+    ) -> HTMLAttribute {
+        .class(classes)
+    }
+
     public static func `class`<Namespace>(
         _ value: HTMLClass<Namespace>
     ) -> HTMLAttribute {
-        .class([value])
+        .class([value.token])
     }
 
     public static func `class`<Namespace>(
         _ classes: [HTMLClass<Namespace>]
     ) -> HTMLAttribute {
-        var a: HTMLAttribute = ["class": classes.map(\.rawValue).joined(separator: " ")]
-        a.semanticClassStorage.formUnion(
-            classes.map(\.erased)
+        .class(
+            classes.map(\.token)
         )
-        return a
+    }
+
+    public static func classes(
+        base: [AnyHTMLClass],
+        appending extra: [HTMLClassToken] = []
+    ) -> HTMLAttribute {
+        .class(
+            base.map(HTMLClassToken.semantic) + extra
+        )
     }
 
     public static func `for`<Namespace>(
