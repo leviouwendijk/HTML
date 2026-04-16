@@ -358,6 +358,31 @@ public extension HTML {
     }
 
     static func document(
+        attributes: HTMLDocumentAttributes = .empty,
+        head: HTMLFragment = [],
+        body: HTMLFragment = []
+    ) -> HTMLDocument {
+        return HTMLDocument(
+            attributes: attributes,
+            head: head,
+            body: body
+        )
+    }
+
+    static func document(
+        attributes: HTMLDocumentAttributes = .empty,
+        @HTMLBuilder head: () -> [any HTMLNode],
+        @HTMLBuilder body: () -> [any HTMLNode]
+    ) -> HTMLDocument {
+        return HTMLDocument(
+            attributes: attributes,
+            head: head(),
+            body: body()
+        )
+    }
+
+    @available(*, message: "Backwards compatibility. Prefer document(attributes:head:body:).")
+    static func document(
         html attrs: HTMLAttribute = HTMLAttribute(),
         head: HTMLFragment = [],
         body: HTMLFragment = []
@@ -369,6 +394,7 @@ public extension HTML {
         )
     }
 
+    @available(*, message: "Backwards compatibility. Prefer document(attributes:head:body:).")
     static func document(
         html attrs: HTMLAttribute = HTMLAttribute(),
         @HTMLBuilder head: () -> [any HTMLNode],

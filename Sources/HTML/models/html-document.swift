@@ -1,43 +1,95 @@
 import Methods
 import Primitives
 
+public struct HTMLDocumentAttributes: Sendable {
+    public var html: HTMLAttribute
+    public var head: HTMLAttribute
+    public var body: HTMLAttribute
+
+    public init(
+        html: HTMLAttribute = HTMLAttribute(),
+        head: HTMLAttribute = HTMLAttribute(),
+        body: HTMLAttribute = HTMLAttribute()
+    ) {
+        self.html = html
+        self.head = head
+        self.body = body
+    }
+
+    public static let empty = HTMLDocumentAttributes()
+}
+
 public struct HTMLDocument: Sendable {
-    public var html_attributes: HTMLAttribute
+    public var attributes: HTMLDocumentAttributes
     public var head: HTMLFragment
     public var body: HTMLFragment
 
+    public init(
+        attributes: HTMLDocumentAttributes = .empty,
+        head: HTMLFragment = [],
+        body: HTMLFragment = []
+    ) {
+        self.attributes = attributes
+        self.head = head
+        self.body = body
+    }
+
+    @available(*, message: "Backwards compatibility. Prefer init(attributes:head:body:).")
     public init(
         html html_attributes: HTMLAttribute = HTMLAttribute(),
         head: HTMLFragment = [],
         body: HTMLFragment = []
     ) {
-        self.html_attributes = html_attributes
-        self.head = head
-        self.body = body
+        self.init(
+            attributes: HTMLDocumentAttributes(
+                html: html_attributes
+            ),
+            head: head,
+            body: body
+        )
     }
 
-    // public init(
-    //     head: HTMLFragment,
-    //     body: HTMLFragment
-    // ) {
-    //     self.init(
-    //         html: HTMLAttribute(),
-    //         head: head,
-    //         body: body
-    //     )
-    // }
-
-    @available(
-        *,
-        deprecated,
-        message: "Legacy flat-child documents are being phased out. Use init(html:head:body:) instead."
-    )
+    @available(*, message: "Backwards compatibility. Prefer init(attributes:head:body:).")
     public init(
         children: HTMLFragment
     ) {
-        self.html_attributes = HTMLAttribute()
-        self.head = []
-        self.body = children
+        self.init(
+            attributes: .empty,
+            head: [],
+            body: children
+        )
+    }
+}
+
+public extension HTMLDocument {
+    @available(*, message: "Backwards compatibility. Prefer attributes.html.")
+    var html_attributes: HTMLAttribute {
+        get {
+            attributes.html
+        }
+        set {
+            attributes.html = newValue
+        }
+    }
+
+    @available(*, message: "Backwards compatibility. Prefer attributes.head.")
+    var head_attributes: HTMLAttribute {
+        get {
+            attributes.head
+        }
+        set {
+            attributes.head = newValue
+        }
+    }
+
+    @available(*, message: "Backwards compatibility. Prefer attributes.body.")
+    var body_attributes: HTMLAttribute {
+        get {
+            attributes.body
+        }
+        set {
+            attributes.body = newValue
+        }
     }
 }
 
@@ -55,11 +107,11 @@ extension HTMLDocument {
 extension HTMLDocument {
     internal var document_tree: HTMLFragment {
         return [
-            HTML.html(html_attributes) {
-                HTML.head {
+            HTML.html(attributes.html) {
+                HTML.head(attributes.head) {
                     head
                 }
-                HTML.body {
+                HTML.body(attributes.body) {
                     body
                 }
             }
@@ -73,7 +125,7 @@ extension HTMLDocument {
 
         if options.doctype {
             out += HTMLDoctype(.html5)
-            .render(options: options)
+                .render(options: options)
         }
 
         let content = document_tree

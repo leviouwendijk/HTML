@@ -4,28 +4,79 @@ public enum HTMLDocumentAttributeMergeStrategy: Sendable {
     case mergeAppend
 }
 
+extension HTMLDocumentAttributes {
+    public func merging(
+        with other: HTMLDocumentAttributes,
+        strategy: HTMLDocumentAttributeMergeStrategy = .mergeAppend
+    ) -> HTMLDocumentAttributes {
+        switch strategy {
+        case .keepCurrent:
+            return self
+
+        case .useOther:
+            return other
+
+        case .mergeAppend:
+            var html = self.html
+            var head = self.head
+            var body = self.body
+
+            html.merge(other.html)
+            head.merge(other.head)
+            body.merge(other.body)
+
+            return HTMLDocumentAttributes(
+                html: html,
+                head: head,
+                body: body
+            )
+        }
+    }
+}
+
 extension HTMLDocument {
     public func merging(
         with other: HTMLDocument,
-        htmlAttributes strategy: HTMLDocumentAttributeMergeStrategy = .keepCurrent
+        attributes strategy: HTMLDocumentAttributeMergeStrategy = .mergeAppend
     ) -> HTMLDocument {
-        let attrs: HTMLAttribute
+        HTMLDocument(
+            attributes: self.attributes.merging(
+                with: other.attributes,
+                strategy: strategy
+            ),
+            head: self.head + other.head,
+            body: self.body + other.body
+        )
+    }
+
+    @available(*, message: "Backwards compatibility. Prefer merging(with:attributes:).")
+    public func merging(
+        with other: HTMLDocument,
+        htmlAttributes strategy: HTMLDocumentAttributeMergeStrategy
+    ) -> HTMLDocument {
+        let html: HTMLAttribute
 
         switch strategy {
         case .keepCurrent:
-            attrs = self.html_attributes
+            html = self.attributes.html
 
         case .useOther:
-            attrs = other.html_attributes
+            html = other.attributes.html
 
         case .mergeAppend:
-            var merged = self.html_attributes
-            merged.merge(other.html_attributes)
-            attrs = merged
+            var merged = self.attributes.html
+            merged.merge(other.attributes.html)
+            html = merged
         }
 
+        var mergedAttributes = self.attributes.merging(
+            with: other.attributes,
+            strategy: .mergeAppend
+        )
+        mergedAttributes.html = html
+
         return HTMLDocument(
-            html: attrs,
+            attributes: mergedAttributes,
             head: self.head + other.head,
             body: self.body + other.body
         )
@@ -37,7 +88,7 @@ extension HTMLDocument {
         head nodes: HTMLFragment
     ) -> HTMLDocument {
         return HTMLDocument(
-            html: self.html_attributes,
+            attributes: self.attributes,
             head: self.head + nodes,
             body: self.body
         )
@@ -47,32 +98,34 @@ extension HTMLDocument {
         body nodes: HTMLFragment
     ) -> HTMLDocument {
         return HTMLDocument(
-            html: self.html_attributes,
+            attributes: self.attributes,
             head: self.head,
             body: self.body + nodes
         )
     }
 
-    public func merging(
-        with other: HTMLDocument
+    public func appending(
+        attributes attrs: HTMLDocumentAttributes
     ) -> HTMLDocument {
         return HTMLDocument(
-            html: self.html_attributes,
-            head: self.head + other.head,
-            body: self.body + other.body
+            attributes: self.attributes.merging(
+                with: attrs,
+                strategy: .mergeAppend
+            ),
+            head: self.head,
+            body: self.body
         )
     }
-}
 
-extension HTMLDocument {
+    @available(*, message: "Backwards compatibility. Prefer appending(attributes: HTMLDocumentAttributes).")
     public func appending(
         attributes attrs: HTMLAttribute
     ) -> HTMLDocument {
-        var merged = self.html_attributes
-        merged.merge(attrs)
+        var merged = self.attributes
+        merged.html.merge(attrs)
 
         return HTMLDocument(
-            html: merged,
+            attributes: merged,
             head: self.head,
             body: self.body
         )

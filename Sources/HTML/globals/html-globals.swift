@@ -5,14 +5,15 @@ import DSL
 @available(
     *,
     deprecated,
-    message: "Use document(html:head:body:) for full documents or fragment { ... } for fragments."
+    message: "Use document(attributes:head:body:) for full documents or fragment { ... } for fragments."
 )
 @inlinable
 public func document(
     @HTMLBuilder _ body: () -> [any HTMLNode]
 ) -> HTMLDocument {
-    return HTML.document(
-        body: body()
+    return HTMLDocument.parsing(
+        attributes: .empty,
+        nodes: body()
     )
 }
 
@@ -426,6 +427,33 @@ public func fragment(
 
 @inlinable
 public func document(
+    attributes: HTMLDocumentAttributes = .empty,
+    head: HTMLFragment = [],
+    body: HTMLFragment = []
+) -> HTMLDocument {
+    return HTML.document(
+        attributes: attributes,
+        head: head,
+        body: body
+    )
+}
+
+@inlinable
+public func document(
+    attributes: HTMLDocumentAttributes = .empty,
+    @HTMLBuilder head: () -> [any HTMLNode],
+    @HTMLBuilder body: () -> [any HTMLNode]
+) -> HTMLDocument {
+    return HTML.document(
+        attributes: attributes,
+        head: head,
+        body: body
+    )
+}
+
+@available(*, message: "Backwards compatibility. Prefer document(attributes:head:body:).")
+@inlinable
+public func document(
     html attrs: HTMLAttribute = HTMLAttribute(),
     head: HTMLFragment = [],
     body: HTMLFragment = []
@@ -437,6 +465,7 @@ public func document(
     )
 }
 
+@available(*, message: "Backwards compatibility. Prefer document(attributes:head:body:).")
 @inlinable
 public func document(
     html attrs: HTMLAttribute = HTMLAttribute(),
@@ -450,7 +479,7 @@ public func document(
     )
 }
 
-@available(*, message: "Backwards compat, use (head:body:) init instead.")
+@available(*, message: "Backwards compat, use document(attributes:head:body:) instead.")
 @inlinable
 public func document(
     html attrs: HTMLAttribute = HTMLAttribute(),
