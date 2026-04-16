@@ -206,6 +206,27 @@ public enum HTML {
         -> any HTMLNode
     { el("blockquote", a, c) }
 
+    public static func aside(
+        _ a: HTMLAttribute = [:],
+        @HTMLBuilder _ c: () -> [any HTMLNode]
+    ) -> any HTMLNode {
+        el("aside", a, c)
+    }
+
+    public static func details(
+        _ a: HTMLAttribute = [:],
+        @HTMLBuilder _ c: () -> [any HTMLNode]
+    ) -> any HTMLNode {
+        el("details", a, c)
+    }
+
+    public static func summary(
+        _ a: HTMLAttribute = [:],
+        @HTMLBuilder _ c: () -> [any HTMLNode]
+    ) -> any HTMLNode {
+        el("summary", a, c)
+    }
+
     public static func h1(_ a: HTMLAttribute = [:], @HTMLBuilder _ c: () -> [any HTMLNode]) -> any HTMLNode { el("h1", a, c) }
     public static func h2(_ a: HTMLAttribute = [:], @HTMLBuilder _ c: () -> [any HTMLNode]) -> any HTMLNode { el("h2", a, c) }
     public static func h3(_ a: HTMLAttribute = [:], @HTMLBuilder _ c: () -> [any HTMLNode]) -> any HTMLNode { el("h3", a, c) }

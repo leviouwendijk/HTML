@@ -477,3 +477,27 @@ public func bundle(
 ) -> any HTMLNode {
     HTML.bundle(scope, body)
 }
+
+@inlinable
+public func aside(
+    _ attrs: HTMLAttribute = [:],
+    @HTMLBuilder _ content: () -> [any HTMLNode]
+) -> any HTMLNode {
+    HTML.aside(attrs, content)
+}
+
+@inlinable
+public func details(
+    _ attrs: HTMLAttribute = [:],
+    @HTMLBuilder _ content: () -> [any HTMLNode]
+) -> any HTMLNode {
+    HTML.details(attrs, content)
+}
+
+@inlinable
+public func summary(
+    _ attrs: HTMLAttribute = [:],
+    @HTMLBuilder _ content: () -> [any HTMLNode]
+) -> any HTMLNode {
+    HTML.summary(attrs, content)
+}
