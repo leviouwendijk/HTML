@@ -408,6 +408,41 @@ public extension HTML {
     }
 }
 
+extension HTML {
+    public static func dl(
+        _ attrs: HTMLAttribute = HTMLAttribute(),
+        @HTMLBuilder _ c: () -> [any HTMLNode]
+    ) -> any HTMLNode {
+        el(
+            "dl",
+            attrs,
+            c
+        )
+    }
+
+    public static func dt(
+        _ attrs: HTMLAttribute = HTMLAttribute(),
+        @HTMLBuilder _ c: () -> [any HTMLNode]
+    ) -> any HTMLNode {
+        el(
+            "dt",
+            attrs,
+            c
+        )
+    }
+
+    public static func dd(
+        _ attrs: HTMLAttribute = HTMLAttribute(),
+        @HTMLBuilder _ c: () -> [any HTMLNode]
+    ) -> any HTMLNode {
+        el(
+            "dd",
+            attrs,
+            c
+        )
+    }
+}
+
 // extension HTML {
 //     public static func bodyDocument(
 //         html attrs: HTMLAttribute = HTMLAttribute(),

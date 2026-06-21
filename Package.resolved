@@ -16,7 +16,7 @@
       "location" : "https://github.com/leviouwendijk/Methods.git",
       "state" : {
         "branch" : "master",
-        "revision" : "47d7bf31c1e547238c1900fe4a1f6961b6cc19bb"
+        "revision" : "62656c2e32b7889df68415464b67b440f7e7e464"
       }
     },
     {
@@ -25,7 +25,7 @@
       "location" : "https://github.com/leviouwendijk/Milieu.git",
       "state" : {
         "branch" : "master",
-        "revision" : "242e890af20eb5f77087cf116ae9374f1f809b2a"
+        "revision" : "61da1601725fd66f5c6ad066dc40ff0cff637d74"
       }
     },
     {
@@ -34,7 +34,7 @@
       "location" : "https://github.com/leviouwendijk/Primitives.git",
       "state" : {
         "branch" : "master",
-        "revision" : "88c0aad7d912d13fcc9131ac271d1691da998355"
+        "revision" : "9c07dc28206dddc67bb0052a84aaecf803a55f67"
       }
     },
     {
