@@ -5,9 +5,9 @@ import PackageDescription
 
 let package = Package(
     name: "HTML",
-    // platforms: [
-    //     .macOS(.v13)
-    // ],
+    platforms: [
+        .macOS(.v13)
+    ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
@@ -20,7 +20,7 @@ let package = Package(
         .package(url: "https://github.com/leviouwendijk/Milieu.git", branch: "master"),
         .package(url: "https://github.com/leviouwendijk/Methods.git", branch: "master"),
         .package(url: "https://github.com/leviouwendijk/Primitives.git", branch: "master"),
-        // .package(url: "https://github.com/leviouwendijk/References.git", branch: "master"),
+        .package(url: "https://github.com/leviouwendijk/References.git", branch: "master"),
     ],
     targets: [
         .target(
@@ -30,12 +30,8 @@ let package = Package(
                 .product(name: "Milieu", package: "Milieu"),
                 .product(name: "Methods", package: "Methods"),
                 .product(name: "Primitives", package: "Primitives"),
-                // .product(name: "References", package: "References"),
+                .product(name: "References", package: "References"),
             ],
-        ),
-        .testTarget(
-            name: "HTMLTests",
-            dependencies: ["HTML"]
         ),
     ]
 )
