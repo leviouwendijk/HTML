@@ -69,3 +69,14 @@ public extension Referencable {
         )
     }
 }
+
+public extension ReferenceGroup {
+    func cite(
+        comment: String? = nil
+    ) -> any HTMLNode {
+        HTML.cite(
+            self,
+            comment: comment
+        )
+    }
+}
