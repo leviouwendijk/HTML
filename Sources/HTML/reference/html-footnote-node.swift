@@ -1,10 +1,28 @@
 public struct Footnote: HTMLNode, Sendable {
-    public let text: String
+    public let content: HTMLFragment
+
+    public var text: String {
+        content.plaintext()
+    }
 
     public init(
         _ text: String
     ) {
-        self.text = text
+        self.content = [
+            HTMLText(text)
+        ]
+    }
+
+    public init(
+        content: HTMLFragment
+    ) {
+        self.content = content
+    }
+
+    public init(
+        @HTMLBuilder _ content: () -> HTMLFragment
+    ) {
+        self.content = content()
     }
 
     public func render(

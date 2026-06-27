@@ -1,5 +1,5 @@
 {
-  "originHash" : "2c5332d6b6a948ad77778bcd40364023596f8b5236a83042a32ddf8224e4234a",
+  "originHash" : "2a67782e06c5ca4f984e5cb3ce6c21eef3a7a69d9101ea59753e1064c8a7d1ea",
   "pins" : [
     {
       "identity" : "dsl",
@@ -43,7 +43,7 @@
       "location" : "https://github.com/leviouwendijk/References.git",
       "state" : {
         "branch" : "master",
-        "revision" : "7436cfa47fd9b17f981324470d30d2e5e30856be"
+        "revision" : "7bdf6a9fdca3ccc0acd61ae5e51802cc25ea030f"
       }
     },
     {

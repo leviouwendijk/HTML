@@ -44,6 +44,22 @@ public extension HTML {
     ) -> any HTMLNode {
         Footnote(text)
     }
+
+    static func footnote(
+        content: HTMLFragment
+    ) -> any HTMLNode {
+        Footnote(
+            content: content
+        )
+    }
+
+    static func footnote(
+        @HTMLBuilder _ content: () -> HTMLFragment
+    ) -> any HTMLNode {
+        Footnote(
+            content: content()
+        )
+    }
 }
 
 public extension Referencable {
