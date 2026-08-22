@@ -1,12 +1,10 @@
 import Foundation
-import Primitives
 
 public enum HTMLPlainTextCollector {
     public struct Options: Sendable {
         public var separator: String
         public var collapseWhitespace: Bool
         public var includeImageAltText: Bool
-        public var environment: BuildEnvironment?
         public var maxLength: Int?
         public var truncationSuffix: String
 
@@ -14,14 +12,12 @@ public enum HTMLPlainTextCollector {
             separator: String = " ",
             collapseWhitespace: Bool = true,
             includeImageAltText: Bool = true,
-            environment: BuildEnvironment? = nil,
             maxLength: Int? = nil,
             truncationSuffix: String = ""
         ) {
             self.separator = separator
             self.collapseWhitespace = collapseWhitespace
             self.includeImageAltText = includeImageAltText
-            self.environment = environment
             self.maxLength = maxLength
             self.truncationSuffix = truncationSuffix
         }
@@ -76,14 +72,6 @@ public enum HTMLPlainTextCollector {
 
         case let inline as HTMLInlineGroup:
             for child in inline.children {
-                append(child, into: &parts, options: options)
-            }
-
-        case let gate as HTMLGate:
-            if let env = options.environment {
-                guard gate.allowed.contains(env) else { return }
-            }
-            for child in gate.children {
                 append(child, into: &parts, options: options)
             }
 

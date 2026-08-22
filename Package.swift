@@ -14,6 +14,12 @@ let package = Package(
             name: "HTML",
             targets: ["HTML"]
         ),
+        .executable(
+            name: "htmltest",
+            targets: [
+                "HTMLTestFlows",
+            ]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/leviouwendijk/DSL.git", branch: "master"),
@@ -21,6 +27,8 @@ let package = Package(
         .package(url: "https://github.com/leviouwendijk/Methods.git", branch: "master"),
         .package(url: "https://github.com/leviouwendijk/Primitives.git", branch: "master"),
         .package(url: "https://github.com/leviouwendijk/References.git", branch: "master"),
+        .package(url: "https://github.com/leviouwendijk/FileTypes.git", branch: "master"),
+        .package(url: "https://github.com/leviouwendijk/TestFlows.git", branch: "master"),
     ],
     targets: [
         .target(
@@ -31,7 +39,18 @@ let package = Package(
                 .product(name: "Methods", package: "Methods"),
                 .product(name: "Primitives", package: "Primitives"),
                 .product(name: "References", package: "References"),
+                .product(name: "FileTypes", package: "FileTypes"),
             ],
+        ),
+        .executableTarget(
+            name: "HTMLTestFlows",
+            dependencies: [
+                "HTML",
+                .product(
+                    name: "TestFlows",
+                    package: "TestFlows"
+                ),
+            ]
         ),
     ]
 )

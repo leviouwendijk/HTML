@@ -143,43 +143,50 @@ extension HTMLDocument {
 }
 
 extension HTMLDocument {
-    public typealias RenderDefault = DocumentRenderStyle
+    public typealias RenderDefault =
+        DocumentRenderStyle
 
     public func render(
-        default: DocumentRenderStyle = .pretty,
-        doctype: Bool? = nil,
-        indentStep: Int? = nil,
-        attributeOrder: HTMLAttributeOrder? = nil,
-        ensureTrailingNewline: Bool? = nil,
-        environment: BuildEnvironment? = nil,
-        onGate: (@Sendable (GateEvent) -> Void)? = nil
+        default:
+            DocumentRenderStyle = .pretty,
+        doctype:
+            Bool? = nil,
+        indentStep:
+            Int? = nil,
+        attributeOrder:
+            HTMLAttributeOrder? = nil,
+        ensureTrailingNewline:
+            Bool? = nil
     ) -> String {
-        var opts = HTMLRenderOptions()
-        opts = `default`.htmlRenderOptions
+        var options =
+            `default`
+                .htmlRenderOptions
 
         doctype.ifNotNil { value in
-            opts.doctype = value
+            options.doctype =
+                value
         }
 
         indentStep.ifNotNil { value in
-            opts.indentStep = value
+            options.indentStep =
+                value
         }
 
         attributeOrder.ifNotNil { value in
-            opts.attributeOrder = value
+            options.attributeOrder =
+                value
         }
 
         ensureTrailingNewline.ifNotNil { value in
-            opts.ensureTrailingNewline = value
+            options.ensureTrailingNewline =
+                value
         }
 
-        environment.ifNotNil { value in
-            opts.environment = value
-        }
-
-        opts.onGate = onGate
-
-        return render(options: opts)
+        return
+            render(
+                options:
+                    options
+            )
     }
 }
 
